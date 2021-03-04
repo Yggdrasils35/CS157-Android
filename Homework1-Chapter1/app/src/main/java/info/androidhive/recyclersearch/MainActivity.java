@@ -45,17 +45,9 @@ public class MainActivity extends AppCompatActivity {
     private SearchAdapter.OnItemClickListener MyItemClickListener = new SearchAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(View v, int position) {
-//            final TextView name = (TextView) v.findViewById(R.id.search_text);
-//            v.findViewById(R.id.recycler_view).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-//                    intent.putExtra("id", position);
-//                    startActivity(intent);
-//                }
-//            });
             Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-            intent.putExtra("id", v.getId());
+            String str1 = String.valueOf(position);
+            intent.putExtra("id", str1);
             startActivity(intent);
         }
 

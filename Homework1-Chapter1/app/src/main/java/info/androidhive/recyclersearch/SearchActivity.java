@@ -24,6 +24,6 @@ public class SearchActivity extends AppCompatActivity {
         searchMessage = (TextView) findViewById(R.id.search_message);
         String message = "这是第" + id_string + "行";
         searchMessage.setText(message);
-        int i = 0;
+
     }
 }
