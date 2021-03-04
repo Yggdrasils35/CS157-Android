@@ -1,5 +1,6 @@
 package info.androidhive.recyclersearch;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
     private List<Search> mSearchList;
-    private OnItemClickListener myClickItemListener;
+
 
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -38,17 +39,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         mSearchList = searchList;
     }
 
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item,parent,false);
         ViewHolder holder = new ViewHolder(view, myClickItemListener);
         return holder;
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener)
-    {
-        this.myClickItemListener = listener;
     }
 
     @Override
@@ -62,10 +59,18 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         return mSearchList.size();
     }
 
+//=======================click===================================
+
     // 自定义回调接口
     public interface OnItemClickListener {
         void onItemClick(View v, int position);
-
         void onItemLongClick(View v);
+    }
+
+    public OnItemClickListener myClickItemListener;
+
+    public void setOnItemClickListener(OnItemClickListener listener)
+    {
+        this.myClickItemListener = listener;
     }
 }
