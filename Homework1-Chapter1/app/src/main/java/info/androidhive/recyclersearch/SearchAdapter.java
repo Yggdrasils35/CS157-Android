@@ -18,6 +18,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView searchText;
+        TextView searchId;
         public OnItemClickListener mOnItemClickListener;
 
         public ViewHolder(View view, OnItemClickListener mListener)
@@ -26,6 +27,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             view.setOnClickListener(this);
             this.mOnItemClickListener = mListener;
             searchText = (TextView) view.findViewById(R.id.search_text);
+            searchId = (TextView) view.findViewById(R.id.search_id);
         }
 
         @Override
@@ -52,6 +54,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position){
         Search search = mSearchList.get(position);
         holder.searchText.setText(search.getText());
+        holder.searchId.setText(String.valueOf(search.getId()));
     }
 
     @Override
