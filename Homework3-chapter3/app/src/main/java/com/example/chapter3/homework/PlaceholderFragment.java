@@ -42,7 +42,6 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // TODO ex3-3: 修改 fragment_placeholder，添加 loading 控件和列表视图控件
         View view = inflater.inflate(R.layout.fragment_placeholder, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         getFriends(10);

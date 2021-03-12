@@ -23,7 +23,6 @@ public class Ch3Ex3Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ch3ex3);
 
-        // TODO: ex3-1. 添加 ViewPager 和 Fragment 做可滑动界面
         ViewPager pager = findViewById(R.id.view_pager);
 
         pager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
