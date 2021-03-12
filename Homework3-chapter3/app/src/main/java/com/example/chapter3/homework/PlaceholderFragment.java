@@ -51,13 +51,14 @@ public class PlaceholderFragment extends Fragment {
         recyclerView.setLayoutManager(manager);
         friendAdapter = new FriendAdapter(friends);
         recyclerView.setAdapter(friendAdapter);
-
+        recyclerView.setVisibility(View.INVISIBLE);
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
 
         getView().postDelayed(new Runnable() {
             @Override
@@ -66,17 +67,18 @@ public class PlaceholderFragment extends Fragment {
                 // TODO ex3-4：实现动画，将 lottie 控件淡出，列表数据淡入
                 ObjectAnimator lottie_out = ObjectAnimator.ofFloat(lottie, "alpha",
                         1.0f, 0f);
-                lottie_out.setDuration(1000);
+                lottie_out.setDuration(500);
                 lottie_out.setInterpolator(new LinearInterpolator());
 
                 ObjectAnimator recycler_in = ObjectAnimator.ofFloat(recyclerView,
                         "alpha",0f, 1.0f);
-                recycler_in.setDuration(1000);
+                recycler_in.setDuration(1500);
                 recycler_in.setInterpolator(new LinearInterpolator());
 
                 AnimatorSet animatorSet = new AnimatorSet();
-                animatorSet.playSequentially(lottie_out, recycler_in);
+                animatorSet.playTogether(lottie_out, recycler_in);
                 animatorSet.start();
+                recyclerView.setVisibility(View.VISIBLE);
             }
         }, 5000);
     }
