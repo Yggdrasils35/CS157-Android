@@ -105,8 +105,6 @@ public class Clock extends View {
         drawHoursValues(canvas);
         drawNeedles(canvas);
 
-        // todo 1: 每一秒刷新一次，让指针动起来
-
     }
 
     private void drawDegrees(Canvas canvas) {
