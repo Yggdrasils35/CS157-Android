@@ -29,6 +29,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.bytedance.practice5.Constants.token;
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 MessageListResponse messageListResponse = getMessageData(studentId, token);
                 List<Message> messageList = messageListResponse.feeds;
-                Log.e("GetData", "Got the correct data!.");
+                List<Message> dataList = new LinkedList<>();
                 new Handler(getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
@@ -95,11 +96,11 @@ public class MainActivity extends AppCompatActivity {
                         else {
                             adapter.setData(null);
                             for (int i = 0; i < messageList.size(); ++i) {
-                                if (messageList.get(i).getId().equals(studentId)) {
-                                    List<Message> dataList = (List<Message>) messageList.get(i);
-                                    adapter.setData(dataList);
+                                if (messageList.get(i).getStudentId().equals(studentId)) {
+                                    dataList.add(messageList.get(i));
                                 }
                             }
+                            adapter.setData(dataList);
                         }
                     }
                 });

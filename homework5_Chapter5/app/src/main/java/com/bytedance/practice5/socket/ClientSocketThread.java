@@ -23,5 +23,14 @@ public class ClientSocketThread extends Thread {
     public void run() {
         // TODO 6 用socket实现简单的HEAD请求（发送content）
         //  将返回结果用callback.onresponse(result)进行展示
+        try {
+            Socket socket = new Socket("localhost", 30000);
+            BufferedOutputStream os = new BufferedOutputStream(socket.getOutputStream());
+            BufferedInputStream is = new BufferedInputStream(socket.getInputStream());
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

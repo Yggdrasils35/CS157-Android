@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bytedance.practice5.model.UploadResponse;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import okhttp3.MediaType;
@@ -27,6 +30,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.bytedance.practice5.Constants.BASE_URL;
+import static com.bytedance.practice5.Constants.STUDENT_ID;
+import static com.bytedance.practice5.Constants.USER_NAME;
+import static com.bytedance.practice5.Constants.token;
 
 public class UploadActivity extends AppCompatActivity {
     private static final String TAG = "chapter5";
@@ -85,9 +93,9 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     private void initNetwork() {
-        //TODO 3
-        // 创建Retrofit实例
-        // 生成api对象
+        final Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        api = retrofit.create(IApi.class);
     }
 
     private void getFile(int requestCode, String type, String title) {
@@ -120,9 +128,47 @@ public class UploadActivity extends AppCompatActivity {
             Toast.makeText(this, "文件过大", Toast.LENGTH_SHORT).show();
             return;
         }
-        //TODO 5
-        // 使用api.submitMessage()方法提交留言
-        // 如果提交成功则关闭activity，否则弹出toast
+
+        MultipartBody.Part from_part = MultipartBody.Part.createFormData("from", USER_NAME);
+        MultipartBody.Part to_part = MultipartBody.Part.createFormData("to", to);
+        MultipartBody.Part content_part = MultipartBody.Part.createFormData("content", content);
+        MultipartBody.Part image_part = MultipartBody.Part.createFormData(
+                "image",
+                "cover.png",
+                RequestBody.create(MediaType.parse("multipart/form-data"), coverImageData));
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Call<UploadResponse> call = api.submitMessage(
+                        STUDENT_ID,
+                        "",
+                        from_part,
+                        to_part,
+                        content_part,
+                        image_part,
+                        token);
+                try {
+                    Response<UploadResponse> response = call.execute();
+                    if (response.body().error != null) {
+                    }
+
+                    if (response.isSuccessful() && response.body().success) {
+                        UploadActivity.this.finish();
+                    }
+                    else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(UploadActivity.this, "上传失败!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 

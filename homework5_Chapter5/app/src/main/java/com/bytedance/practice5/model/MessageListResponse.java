@@ -9,4 +9,5 @@ public class MessageListResponse {
     public List<Message> feeds;
     @SerializedName("success")
     public boolean success;
+
 }
