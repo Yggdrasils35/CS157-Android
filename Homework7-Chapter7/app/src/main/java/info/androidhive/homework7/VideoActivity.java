@@ -63,17 +63,7 @@ public class VideoActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        mTimer = new Timer();
-//        mTimerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                if(isChanging == Boolean.TRUE) {
-//                    return;
-//                }
-//                seekBar.setProgress(player.getCurrentPosition());
-//            }
-//        };
-//        mTimer.schedule(mTimerTask, 0, 10);
+
         thread = new Thread(new SeekBarThread());
         thread.start();
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
