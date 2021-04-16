@@ -7,6 +7,7 @@ import android.graphics.PixelFormat;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -22,8 +23,10 @@ public class VideoActivity extends AppCompatActivity {
     private SurfaceHolder holder;
     private static SeekBar seekBar;
     private Boolean isChanging;
-    private Timer mTimer;
-    private TimerTask mTimerTask;
+//    private Timer mTimer;
+//    private TimerTask mTimerTask;
+    private Thread thread;
+    private boolean isStop;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -42,17 +45,6 @@ public class VideoActivity extends AppCompatActivity {
             holder.addCallback(new PlayerCallBack());
             player.prepare();
             seekBar.setMax(player.getDuration());
-            mTimer = new Timer();
-            mTimerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    if(isChanging == Boolean.TRUE) {
-                        return;
-                    }
-                    seekBar.setProgress(player.getCurrentPosition());
-                }
-            };
-            mTimer.schedule(mTimerTask, 0, 10);
 
             player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
@@ -61,36 +53,46 @@ public class VideoActivity extends AppCompatActivity {
                     player.setLooping(true);
                 }
             });
-
-            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                    isChanging = true;
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                    player.seekTo(seekBar.getProgress());
-                    isChanging = false;
-                }
-            });
-
             player.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
                 @Override
                 public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
                     System.out.println(i);
                 }
             });
-            seekBar.setMax(player.getDuration());
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+//        mTimer = new Timer();
+//        mTimerTask = new TimerTask() {
+//            @Override
+//            public void run() {
+//                if(isChanging == Boolean.TRUE) {
+//                    return;
+//                }
+//                seekBar.setProgress(player.getCurrentPosition());
+//            }
+//        };
+//        mTimer.schedule(mTimerTask, 0, 10);
+        thread = new Thread(new SeekBarThread());
+        thread.start();
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                isChanging = true;
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                player.seekTo(seekBar.getProgress());
+                isChanging = false;
+            }
+        });
 
         findViewById(R.id.playButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +116,7 @@ public class VideoActivity extends AppCompatActivity {
             player.stop();
             player.release();
         }
+        isStop = true;
     }
 
     private class PlayerCallBack implements SurfaceHolder.Callback {
@@ -133,21 +136,22 @@ public class VideoActivity extends AppCompatActivity {
         }
     }
 
-//    private class MySeekBar implements SeekBar.OnSeekBarChangeListener {
-//        @Override
-//        public void onProgressChanged(SeekBar seekBar, int progress,
-//                                      boolean fromUser) {
-//        }
-//
-//        @Override
-//        public void onStartTrackingTouch(SeekBar seekBar) {
-//            isChanging=true;
-//        }
-//
-//        @Override
-//        public void onStopTrackingTouch(SeekBar seekBar) {
-//            player.seekTo(seekBar.getProgress());
-//            isChanging=false;
-//        }
-//    }
+    private class SeekBarThread implements Runnable {
+        @Override
+        public void run() {
+            while (player != null && isStop != Boolean.TRUE) {
+                // 将SeekBar位置设置到当前播放位置
+                if (isChanging == Boolean.TRUE) continue;
+                seekBar.setProgress(player.getCurrentPosition());
+                try {
+                    // 每100毫秒更新一次位置
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.exit(0);
+        }
+
+    }
 }
